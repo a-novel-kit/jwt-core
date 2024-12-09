@@ -214,7 +214,7 @@ type JWH struct {
 	// represented as a JSON Web CEK [JWK]. Use of this Header Parameter is
 	// OPTIONAL.
 	JWK *JWK `json:"jwk,omitempty"`
-	// KID (CEK ID) Header Parameter.
+	// KID (Key ID) Header Parameter.
 	//
 	// https://datatracker.ietf.org/doc/html/rfc7515#section-4.1.4
 	//
