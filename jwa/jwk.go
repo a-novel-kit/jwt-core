@@ -141,6 +141,19 @@ type JWK struct {
 	// Resistant Name. The "alg" value is a case-sensitive ASCII string.
 	// Use of this member is OPTIONAL.
 	Alg Alg `json:"alg,omitempty"`
+	// KID (Key ID) JWK Parameter.
+	//
+	// https://datatracker.ietf.org/doc/html/rfc7515#section-4.1.4
+	//
+	// The "kid" (key ID) JWK Parameter is a hint indicating which key
+	// was used to secure the JWS. This parameter allows originators to
+	// explicitly signal a change of key to recipients. The structure of
+	// the "kid" value is unspecified. Its value MUST be a case-sensitive
+	// string. Use of this JWK Parameter is OPTIONAL.
+	//
+	// When used with a JWK, the "kid" value is used to match a JWK "kid"
+	// parameter value.
+	KID string `json:"kid,omitempty"`
 
 	J509
 }
