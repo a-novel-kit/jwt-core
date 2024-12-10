@@ -12,6 +12,8 @@ import (
 
 	"github.com/stretchr/testify/require"
 
+	"github.com/a-novel-kit/certdeck"
+
 	testcerts "github.com/a-novel-kit/jwt-core/internal/certs"
 	"github.com/a-novel-kit/jwt-core/jwa"
 	jwx509 "github.com/a-novel-kit/jwt-core/x509"
@@ -189,7 +191,7 @@ func TestVerify(t *testing.T) {
 				ReqFactory: jw509json.RequestFactoryDefault,
 			},
 
-			expectErr: jwx509.ErrCertMismatch,
+			expectErr: certdeck.ErrCertMismatch,
 		},
 		{
 			name: "invalid jwa string",
@@ -216,7 +218,7 @@ func TestVerify(t *testing.T) {
 				ReqFactory: jw509json.RequestFactoryDefault,
 			},
 
-			expectErr: jwx509.ErrUnexpectedStatus,
+			expectErr: jw509json.ErrUnexpectedStatus,
 		},
 		{
 			name: "invalid thumbprint sha1",
@@ -275,7 +277,7 @@ func TestVerify(t *testing.T) {
 		t.Run(testCase.name, func(t *testing.T) {
 			res, err := jw509json.Verify(context.Background(), testCase.src, testCase.config)
 			require.ErrorIs(t, err, testCase.expectErr)
-			require.NoError(t, jwx509.Match(res, testCase.expect))
+			require.NoError(t, certdeck.Match(res, testCase.expect))
 		})
 	}
 }
