@@ -5,15 +5,21 @@ import (
 	"encoding/base64"
 	"errors"
 	"fmt"
+	"io"
 	"net/http"
 
 	"golang.org/x/net/context"
+
+	"github.com/a-novel-kit/certdeck"
 
 	"github.com/a-novel-kit/jwt-core/jwa"
 	jwx509 "github.com/a-novel-kit/jwt-core/x509"
 )
 
-var ErrNoCert = errors.New("no certificate chain provided")
+var (
+	ErrNoCert           = errors.New("no certificate chain provided")
+	ErrUnexpectedStatus = errors.New("unexpected status code")
+)
 
 type VerifyConfig struct {
 	// Validate is an optional config to ensure the certificate chain is valid.
@@ -36,7 +42,7 @@ func Verify(ctx context.Context, src *jwa.J509, config *VerifyConfig) ([]*x509.C
 	var err error
 
 	if len(src.X5C) > 0 {
-		localChain, err = jwx509.DecodeEmbedded(src.X5C)
+		localChain, err = certdeck.Base64ToCerts(src.X5C)
 		if err != nil {
 			return nil, fmt.Errorf("decode certificate chain: %w", err)
 		}
@@ -50,7 +56,23 @@ func Verify(ctx context.Context, src *jwa.J509, config *VerifyConfig) ([]*x509.C
 			return nil, fmt.Errorf("create x5u request: %w", err)
 		}
 
-		remoteChain, err = jwx509.DecodeRemoteHTTP(request)
+		resp, err := http.DefaultClient.Do(request)
+		if err != nil {
+			return nil, fmt.Errorf("fetch remote certificate chain: %w", err)
+		}
+
+		if resp.StatusCode != http.StatusOK {
+			_ = resp.Body.Close()
+			return nil, fmt.Errorf("fetch remote certificate chain: %w", ErrUnexpectedStatus)
+		}
+
+		data, err := io.ReadAll(resp.Body)
+		_ = resp.Body.Close()
+		if err != nil {
+			return nil, fmt.Errorf("read remote certificate chain: %w", err)
+		}
+
+		remoteChain, err = certdeck.PEMInlineToCerts(data)
 		if err != nil {
 			return nil, fmt.Errorf("decode remote certificate chain: %w", err)
 		}
@@ -63,7 +85,7 @@ func Verify(ctx context.Context, src *jwa.J509, config *VerifyConfig) ([]*x509.C
 	}
 
 	if len(localChain) > 0 && len(remoteChain) > 0 {
-		if err := jwx509.Match(localChain, remoteChain); err != nil {
+		if err := certdeck.Match(localChain, remoteChain); err != nil {
 			return nil, fmt.Errorf("certificate chain mismatch: %w", err)
 		}
 	}
