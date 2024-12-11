@@ -1,4 +1,4 @@
-package jws_test
+package jwscore_test
 
 import (
 	"crypto"
@@ -7,7 +7,7 @@ import (
 	"github.com/stretchr/testify/require"
 
 	jwkgen "github.com/a-novel-kit/jwt-core/jwk/gen"
-	"github.com/a-novel-kit/jwt-core/jws"
+	jwscore "github.com/a-novel-kit/jwt-core/jws"
 )
 
 func TestSignAndVerifyHMAC(t *testing.T) {
@@ -25,17 +25,17 @@ func TestSignAndVerifyHMAC(t *testing.T) {
 		strToSign := "Hello, World!"
 
 		// Sign the string.
-		signature, err := jws.SignHMAC(strToSign, key, crypto.SHA256)
+		signature, err := jwscore.SignHMAC(strToSign, key, crypto.SHA256)
 		require.NoError(t, err)
 		require.NotEmpty(t, signature)
 
 		// Verify the signature.
-		err = jws.VerifyHMAC(strToSign, signature, key, crypto.SHA256)
+		err = jwscore.VerifyHMAC(strToSign, signature, key, crypto.SHA256)
 		require.NoError(t, err)
 
 		// Verify the signature with a wrong key.
-		err = jws.VerifyHMAC(strToSign, signature, key2, crypto.SHA256)
-		require.ErrorIs(t, err, jws.ErrInvalidSignature)
+		err = jwscore.VerifyHMAC(strToSign, signature, key2, crypto.SHA256)
+		require.ErrorIs(t, err, jwscore.ErrInvalidSignature)
 	})
 
 	t.Run("VerifyWithWrongSHA", func(t *testing.T) {
@@ -47,13 +47,13 @@ func TestSignAndVerifyHMAC(t *testing.T) {
 		strToSign := "Hello, World!"
 
 		// Sign the string.
-		signature, err := jws.SignHMAC(strToSign, key, crypto.SHA256)
+		signature, err := jwscore.SignHMAC(strToSign, key, crypto.SHA256)
 		require.NoError(t, err)
 		require.NotEmpty(t, signature)
 
 		// Verify the signature.
-		err = jws.VerifyHMAC(strToSign, signature, key, crypto.SHA3_384)
-		require.ErrorIs(t, err, jws.ErrInvalidSignature)
+		err = jwscore.VerifyHMAC(strToSign, signature, key, crypto.SHA3_384)
+		require.ErrorIs(t, err, jwscore.ErrInvalidSignature)
 	})
 
 	t.Run("DataTampered", func(t *testing.T) {
@@ -65,13 +65,13 @@ func TestSignAndVerifyHMAC(t *testing.T) {
 		strToSign := "Hello, World!"
 
 		// Sign the string.
-		signature, err := jws.SignHMAC(strToSign, key, crypto.SHA256)
+		signature, err := jwscore.SignHMAC(strToSign, key, crypto.SHA256)
 		require.NoError(t, err)
 		require.NotEmpty(t, signature)
 
 		// Verify the signature.
-		err = jws.VerifyHMAC(strToSign+"foo", signature, key, crypto.SHA3_384)
-		require.ErrorIs(t, err, jws.ErrInvalidSignature)
+		err = jwscore.VerifyHMAC(strToSign+"foo", signature, key, crypto.SHA3_384)
+		require.ErrorIs(t, err, jwscore.ErrInvalidSignature)
 	})
 
 	t.Run("SignatureTampered", func(t *testing.T) {
@@ -83,12 +83,12 @@ func TestSignAndVerifyHMAC(t *testing.T) {
 		strToSign := "Hello, World!"
 
 		// Sign the string.
-		signature, err := jws.SignHMAC(strToSign, key, crypto.SHA256)
+		signature, err := jwscore.SignHMAC(strToSign, key, crypto.SHA256)
 		require.NoError(t, err)
 		require.NotEmpty(t, signature)
 
 		// Verify the signature.
-		err = jws.VerifyHMAC(strToSign, "&/?.,<>", key, crypto.SHA3_384)
+		err = jwscore.VerifyHMAC(strToSign, "&/?.,<>", key, crypto.SHA3_384)
 		require.Error(t, err)
 	})
 }
