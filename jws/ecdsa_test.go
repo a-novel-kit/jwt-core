@@ -1,4 +1,4 @@
-package jws_test
+package jwscore_test
 
 import (
 	"crypto/elliptic"
@@ -7,7 +7,7 @@ import (
 	"github.com/stretchr/testify/require"
 
 	jwkgen "github.com/a-novel-kit/jwt-core/jwk/gen"
-	"github.com/a-novel-kit/jwt-core/jws"
+	jwscore "github.com/a-novel-kit/jwt-core/jws"
 )
 
 func TestSignAndVerifyEC(t *testing.T) {
@@ -25,17 +25,17 @@ func TestSignAndVerifyEC(t *testing.T) {
 		strToSign := "Hello, World!"
 
 		// Sign the string.
-		signature, err := jws.SignEC(strToSign, key)
+		signature, err := jwscore.SignEC(strToSign, key)
 		require.NoError(t, err)
 		require.NotEmpty(t, signature)
 
 		// Verify the signature.
-		err = jws.VerifyEC(strToSign, signature, &key.PublicKey)
+		err = jwscore.VerifyEC(strToSign, signature, &key.PublicKey)
 		require.NoError(t, err)
 
 		// Verify the signature with a wrong key.
-		err = jws.VerifyEC(strToSign, signature, &key2.PublicKey)
-		require.ErrorIs(t, err, jws.ErrInvalidSignature)
+		err = jwscore.VerifyEC(strToSign, signature, &key2.PublicKey)
+		require.ErrorIs(t, err, jwscore.ErrInvalidSignature)
 	})
 
 	t.Run("DataTampered", func(t *testing.T) {
@@ -47,13 +47,13 @@ func TestSignAndVerifyEC(t *testing.T) {
 		strToSign := "Hello, World!"
 
 		// Sign the string.
-		signature, err := jws.SignEC(strToSign, key)
+		signature, err := jwscore.SignEC(strToSign, key)
 		require.NoError(t, err)
 		require.NotEmpty(t, signature)
 
 		// Verify the signature.
-		err = jws.VerifyEC(strToSign+"foo", signature, &key.PublicKey)
-		require.ErrorIs(t, err, jws.ErrInvalidSignature)
+		err = jwscore.VerifyEC(strToSign+"foo", signature, &key.PublicKey)
+		require.ErrorIs(t, err, jwscore.ErrInvalidSignature)
 	})
 
 	t.Run("SignatureTampered", func(t *testing.T) {
@@ -65,12 +65,12 @@ func TestSignAndVerifyEC(t *testing.T) {
 		strToSign := "Hello, World!"
 
 		// Sign the string.
-		signature, err := jws.SignEC(strToSign, key)
+		signature, err := jwscore.SignEC(strToSign, key)
 		require.NoError(t, err)
 		require.NotEmpty(t, signature)
 
 		// Verify the signature.
-		err = jws.VerifyEC(strToSign, "&/?.,<>", &key.PublicKey)
+		err = jwscore.VerifyEC(strToSign, "&/?.,<>", &key.PublicKey)
 		require.Error(t, err)
 	})
 }

@@ -6,14 +6,14 @@ import (
 	"errors"
 	"fmt"
 
-	"github.com/a-novel-kit/jwt-core/jwk"
+	jwkcore "github.com/a-novel-kit/jwt-core/jwk"
 )
 
 // EncryptAESGCM encrypts the payload using AES-GCM. It returns (in order)
 // the encrypted payload and the authentication tag.
 //
 // Additional data is an optional parameter that can be used to pass unencrypted data to the payload.
-func EncryptAESGCM(payload, additionalData []byte, key *jwk.AESKeySet) (*AESPayload, error) {
+func EncryptAESGCM(payload, additionalData []byte, key *jwkcore.AESKeySet) (*AESPayload, error) {
 	switch len(key.CEK) {
 	case 16, 24, 32:
 	default:
@@ -48,7 +48,7 @@ func EncryptAESGCM(payload, additionalData []byte, key *jwk.AESKeySet) (*AESPayl
 }
 
 // DecryptAESGCM decrypts the payload using AES-GCM. It returns the decrypted payload.
-func DecryptAESGCM(data *AESPayload, additionalData []byte, key *jwk.AESKeySet) ([]byte, error) {
+func DecryptAESGCM(data *AESPayload, additionalData []byte, key *jwkcore.AESKeySet) ([]byte, error) {
 	switch len(key.CEK) {
 	case 16, 24, 32:
 	default:

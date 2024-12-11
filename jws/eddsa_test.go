@@ -1,4 +1,4 @@
-package jws_test
+package jwscore_test
 
 import (
 	"testing"
@@ -6,7 +6,7 @@ import (
 	"github.com/stretchr/testify/require"
 
 	jwkgen "github.com/a-novel-kit/jwt-core/jwk/gen"
-	"github.com/a-novel-kit/jwt-core/jws"
+	jwscore "github.com/a-novel-kit/jwt-core/jws"
 )
 
 func TestSignAndVerifyED25519(t *testing.T) {
@@ -22,16 +22,16 @@ func TestSignAndVerifyED25519(t *testing.T) {
 		strToSign := "Hello, World!"
 
 		// Sign the string.
-		signature := jws.SignED25519(strToSign, privKey1)
+		signature := jwscore.SignED25519(strToSign, privKey1)
 		require.NotEmpty(t, signature)
 
 		// Verify the signature.
-		err = jws.VerifyED25519(strToSign, signature, pubKey1)
+		err = jwscore.VerifyED25519(strToSign, signature, pubKey1)
 		require.NoError(t, err)
 
 		// Verify the signature with a wrong key.
-		err = jws.VerifyED25519(strToSign, signature, pubKey2)
-		require.ErrorIs(t, err, jws.ErrInvalidSignature)
+		err = jwscore.VerifyED25519(strToSign, signature, pubKey2)
+		require.ErrorIs(t, err, jwscore.ErrInvalidSignature)
 	})
 
 	t.Run("DataTampered", func(t *testing.T) {
@@ -42,12 +42,12 @@ func TestSignAndVerifyED25519(t *testing.T) {
 		strToSign := "Hello, World!"
 
 		// Sign the string.
-		signature := jws.SignED25519(strToSign, privKey)
+		signature := jwscore.SignED25519(strToSign, privKey)
 		require.NotEmpty(t, signature)
 
 		// Verify the signature.
-		err = jws.VerifyED25519(strToSign+"foo", signature, pubKey)
-		require.ErrorIs(t, err, jws.ErrInvalidSignature)
+		err = jwscore.VerifyED25519(strToSign+"foo", signature, pubKey)
+		require.ErrorIs(t, err, jwscore.ErrInvalidSignature)
 	})
 
 	t.Run("SignatureTampered", func(t *testing.T) {
@@ -58,11 +58,11 @@ func TestSignAndVerifyED25519(t *testing.T) {
 		strToSign := "Hello, World!"
 
 		// Sign the string.
-		signature := jws.SignED25519(strToSign, privKey)
+		signature := jwscore.SignED25519(strToSign, privKey)
 		require.NotEmpty(t, signature)
 
 		// Verify the signature.
-		err = jws.VerifyED25519(strToSign, "&/?.,<>", pubKey)
+		err = jwscore.VerifyED25519(strToSign, "&/?.,<>", pubKey)
 		require.Error(t, err)
 	})
 }

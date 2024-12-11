@@ -1,4 +1,4 @@
-package jwk
+package jwkcore
 
 type AESKeySet struct {
 	// CEK is the content encryption key.

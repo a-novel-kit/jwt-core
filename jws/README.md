@@ -29,7 +29,7 @@ The following algorithms are supported:
 | RSASSA-PKCS1-v1_5 ⚠️ | `VerifyRSA(unsigned string, signature string, key *rsa.PublicKey, hash crypto.Hash) error`    |
 | ECDSA                | `VerifyEC(unsigned string, signature string, key *ecdsa.PublicKey) error`                     |
 | RSASSA-PSS           | `VerifyRSAPSS(unsigned string, signature string, key *rsa.PublicKey, hash crypto.Hash) error` |
-| EdDSA (x25519)       | `VerifyED25519(unsigned string, signature string, key *ed25519.PublicKey) error`              |
+| EdDSA (x25519)       | `VerifyED25519(unsigned string, signature string, key ed25519.PublicKey) error`               |
 
 ## Sign
 
@@ -47,7 +47,7 @@ The following algorithms are supported:
 | RSASSA-PKCS1-v1_5 ⚠️ | `SignRSA(unsigned string, key *rsa.PrivateKey, hash crypto.Hash) (string, error)`    |
 | ECDSA                | `SignEC(unsigned string, key *ecdsa.PrivateKey) (string, error)`                     |
 | RSASSA-PSS           | `SignRSAPSS(unsigned string, key *rsa.PrivateKey, hash crypto.Hash) (string, error)` |
-| EdDSA (x255219)      | `SignED25519(unsigned string, key *ed25519.PrivateKey) string`                       |
+| EdDSA (x255219)      | `SignED25519(unsigned string, key ed25519.PrivateKey) string`                        |
 
 ## Deprecation on RSA1_5 algorithms
 

@@ -4,7 +4,7 @@ import (
 	"crypto/rand"
 	"fmt"
 
-	"github.com/a-novel-kit/jwt-core/jwk"
+	jwkcore "github.com/a-novel-kit/jwt-core/jwk"
 )
 
 type AESKeySize int
@@ -53,7 +53,7 @@ type AESKeyPreset struct {
 }
 
 // AESKeySet creates a new random key and IV that can be used for symmetric encryption.
-func AESKeySet(preset AESKeyPreset) (*jwk.AESKeySet, error) {
+func AESKeySet(preset AESKeyPreset) (*jwkcore.AESKeySet, error) {
 	key, err := AES(preset.KeySize)
 	if err != nil {
 		return nil, fmt.Errorf("generate key: %w", err)
@@ -64,7 +64,7 @@ func AESKeySet(preset AESKeyPreset) (*jwk.AESKeySet, error) {
 		return nil, fmt.Errorf("generate IV: %w", err)
 	}
 
-	return &jwk.AESKeySet{
+	return &jwkcore.AESKeySet{
 		CEK: key,
 		IV:  iv,
 	}, nil

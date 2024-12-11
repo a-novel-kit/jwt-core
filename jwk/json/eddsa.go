@@ -31,7 +31,7 @@ type EDPayload struct {
 var ErrInvalidEDKey = errors.New("invalid EdDSA key")
 
 // DecodeED decodes the EdDSA key from a JWK format.
-func DecodeED(src *EDPayload) (*ed25519.PrivateKey, *ed25519.PublicKey, error) {
+func DecodeED(src *EDPayload) (ed25519.PrivateKey, ed25519.PublicKey, error) {
 	if src.Crv != "Ed25519" {
 		return nil, nil, ErrUnsupportedCurve
 	}
@@ -48,7 +48,7 @@ func DecodeED(src *EDPayload) (*ed25519.PrivateKey, *ed25519.PublicKey, error) {
 	edPubKey := ed25519.PublicKey(publicKey)
 
 	if src.D == "" {
-		return nil, &edPubKey, nil
+		return nil, edPubKey, nil
 	}
 
 	privateKey, err := base64.RawURLEncoding.DecodeString(src.D)
@@ -62,24 +62,24 @@ func DecodeED(src *EDPayload) (*ed25519.PrivateKey, *ed25519.PublicKey, error) {
 
 	edPrivKey := ed25519.PrivateKey(privateKey)
 
-	return &edPrivKey, &edPubKey, nil
+	return edPrivKey, edPubKey, nil
 }
 
 // EncodeED returns the JWK representation of an EdDSA key.
-func EncodeED[Key *ed25519.PublicKey | *ed25519.PrivateKey](key Key) *EDPayload {
-	pubKey, ok := any(key).(*ed25519.PublicKey)
+func EncodeED[Key ed25519.PublicKey | ed25519.PrivateKey](key Key) *EDPayload {
+	pubKey, ok := any(key).(ed25519.PublicKey)
 	if ok {
-		encodedPub := base64.RawURLEncoding.EncodeToString(*pubKey)
+		encodedPub := base64.RawURLEncoding.EncodeToString(pubKey)
 		return &EDPayload{
 			Crv: "Ed25519",
 			X:   encodedPub,
 		}
 	}
 
-	privKey := any(key).(*ed25519.PrivateKey)
+	privKey := any(key).(ed25519.PrivateKey)
 
 	encodedPub := base64.RawURLEncoding.EncodeToString(privKey.Public().(ed25519.PublicKey))
-	encodedPriv := base64.RawURLEncoding.EncodeToString(*privKey)
+	encodedPriv := base64.RawURLEncoding.EncodeToString(privKey)
 
 	return &EDPayload{
 		Crv: "Ed25519",

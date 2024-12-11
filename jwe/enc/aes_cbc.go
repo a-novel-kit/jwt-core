@@ -10,7 +10,7 @@ import (
 	"fmt"
 
 	jweutils "github.com/a-novel-kit/jwt-core/jwe/utils"
-	"github.com/a-novel-kit/jwt-core/jwk"
+	jwkcore "github.com/a-novel-kit/jwt-core/jwk"
 )
 
 var (
@@ -22,7 +22,7 @@ var (
 // the encrypted payload and the authentication tag.
 //
 // Additional data is an optional parameter that can be used to pass unencrypted data to the payload.
-func EncryptAESCBC(payload, additionalData []byte, key *jwk.AESKeySet) (*AESPayload, error) {
+func EncryptAESCBC(payload, additionalData []byte, key *jwkcore.AESKeySet) (*AESPayload, error) {
 	var hash crypto.Hash
 	var encKeyLen, macKeyLen, tLen int
 
@@ -116,7 +116,7 @@ func EncryptAESCBC(payload, additionalData []byte, key *jwk.AESKeySet) (*AESPayl
 }
 
 // DecryptAESCBC decrypts the payload using AES-CBC with the given parameters. It returns the decrypted payload.
-func DecryptAESCBC(data *AESPayload, additionalData []byte, key *jwk.AESKeySet) ([]byte, error) {
+func DecryptAESCBC(data *AESPayload, additionalData []byte, key *jwkcore.AESKeySet) ([]byte, error) {
 	var hash crypto.Hash
 	var encKeyLen, macKeyLen, tLen int
 
