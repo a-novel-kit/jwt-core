@@ -3,7 +3,7 @@ module github.com/a-novel-kit/jwt-core
 go 1.23.4
 
 require (
-	github.com/a-novel-kit/certdeck v0.1.0
+	github.com/a-novel-kit/certdeck v0.1.1
 	github.com/stretchr/testify v1.10.0
 	golang.org/x/crypto v0.30.0
 	golang.org/x/net v0.32.0
